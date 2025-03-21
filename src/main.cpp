@@ -1,5 +1,4 @@
 #include "fun.h"
-
 void Do_Nelder_Mead( Nelder_Mead algorithm){
     cout<<"Start Symplex"<<endl;
     algorithm.Print_symplex();

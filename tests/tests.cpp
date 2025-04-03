@@ -90,3 +90,41 @@ TEST(Test_Nelder_Mead, test3) {
     vector<float> result = algorithm.Get_Nelder_Mead_result();
     EXPECT_EQ(res_point, result);
 }
+
+TEST(Test_Nelder_Mead, test4_Rezen_n) {
+    vector<vector<float>> points = {{1.0, 1.0, 1.0, 1.0},{1.5, 1.0, 1.0, 1.0}, {1.0, 1.5, 1.0, 1.0}, {1.0, 1.0, 1.5, 1.0},{1.0, 1.0, 1.0, 1.5}};
+    int point_size = 4;
+    int problem_size = 5;
+    vector<float> res_point = {1.0, 1.0, 1.0, 1.0};
+    Nelder_Mead algorithm = Nelder_Mead(problem_size, points,  function_Rezen_n);
+    vector<float> result = algorithm.Get_Nelder_Mead_result();
+    EXPECT_EQ(res_point, result);
+}
+
+TEST(Test_Nelder_Mead, test5_Izom) {
+    int point_size = 2;
+    int problem_size = 3;
+    vector<float> res_point = {3.14, 3.14};
+    Nelder_Mead algorithm = Nelder_Mead(problem_size, function_Izom_2d);
+    vector<float> result = algorithm.Get_Nelder_Mead_result();
+    vector<float> round_res = {round(result[0] * 100) / 100, round(result[1] * 100) / 100};
+    EXPECT_EQ(res_point, round_res);
+}
+
+TEST(Test_Nelder_Mead, test6_Rastr_n) {
+    int point_size = 6;
+    int problem_size = 7;
+    vector<float> res_point = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    Nelder_Mead algorithm = Nelder_Mead(problem_size, function_Rastr_n);
+    vector<float> result = algorithm.Get_Nelder_Mead_result();
+    EXPECT_EQ(res_point, res_point);
+}
+
+TEST(Test_Nelder_Mead, test7_Sphere_n) {
+    int point_size = 6;
+    int problem_size = 7;
+    vector<float> res_point = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    Nelder_Mead algorithm = Nelder_Mead(problem_size, function_Sphere_n);
+    vector<float> result = algorithm.Get_Nelder_Mead_result();
+    EXPECT_EQ(res_point, res_point);
+}

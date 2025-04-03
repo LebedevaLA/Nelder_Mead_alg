@@ -12,7 +12,9 @@ void Do_Nelder_Mead( Nelder_Mead algorithm){
 }
 
 int main(){
-    int point_size = 2;
+    cout << "Input point_size" << endl;
+    int point_size;
+    cin >> point_size;
     int problem_size = point_size + 1;
     cout << "Do you know symplex?(y/n)" << endl;
     char answer;
@@ -48,7 +50,7 @@ int main(){
         have_coeff = 1;
     }
     if (!have_coeff && !have_initialsymplex){
-        Nelder_Mead algorithm = Nelder_Mead(problem_size,function2_2d);
+        Nelder_Mead algorithm = Nelder_Mead(problem_size, function_Izom_2d);
         Do_Nelder_Mead(algorithm);
     }
     else if (have_coeff && have_initialsymplex){

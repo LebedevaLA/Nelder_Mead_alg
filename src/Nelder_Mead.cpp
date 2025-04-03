@@ -21,12 +21,15 @@ void Nelder_Mead::Sort_Symplex(){
         }
     }
     best_point = symplex[0];
-    good_point = symplex[problem_size - 2];
+    good_point = symplex[ceil(problem_size/2)];
     worst_point = symplex[problem_size - 1];
 }
 
 vector<float> Nelder_Mead::Find_Middle_point_best_good(){
-    vector <float> middle_point{0.0, 0.0};
+    vector<float> middle_point;
+    for (int index = 0; index < point_size; index++){
+        middle_point.push_back(0.0);
+    }
     for (int index = 0; index < problem_size - 1; index++){
         for (int iter = 0; iter < point_size; iter++){
             middle_point[iter] += symplex[index][iter];
@@ -39,7 +42,10 @@ vector<float> Nelder_Mead::Find_Middle_point_best_good(){
 }
 
 vector<float> Nelder_Mead::Find_Center_point_worst_middle(){
-    vector <float> center_point{0.0, 0.0};
+    vector<float> center_point;
+    for (int index = 0; index < point_size; index++){
+        center_point.push_back(0.0);
+    }
     for (int iter = 0; iter < point_size; iter++){
         center_point[iter] += (worst_point[iter] + middle_point[iter]);
     }
@@ -50,7 +56,10 @@ vector<float> Nelder_Mead::Find_Center_point_worst_middle(){
 }
 
 vector<float> Nelder_Mead::reflection(){
-    vector<float> reflection_point{0.0, 0.0};
+    vector<float> reflection_point;
+    for (int index = 0; index < point_size; index++){
+        reflection_point.push_back(0.0);
+    }
     for (int index = 0; index < point_size; index++){
         reflection_point[index] = middle_point[index] + alpha*(middle_point[index] - worst_point[index]);
     }
@@ -58,7 +67,10 @@ vector<float> Nelder_Mead::reflection(){
 }
 
 vector<float> Nelder_Mead::compression(){
-    vector<float> compression_point{0.0, 0.0};
+    vector<float> compression_point;
+    for (int index = 0; index < point_size; index++){
+        compression_point.push_back(0.0);
+    }
     for (int index = 0; index < point_size; index++){
         compression_point[index] = middle_point[index] + beta*(worst_point[index] - middle_point[index]);
     }
@@ -66,7 +78,10 @@ vector<float> Nelder_Mead::compression(){
 }
 
 vector<float> Nelder_Mead::expansion(vector<float> reflection_point){
-    vector<float> expansion_point{0.0, 0.0};
+    vector<float> expansion_point;
+    for (int index = 0; index < point_size; index++){
+        expansion_point.push_back(0.0);
+    }
     for (int index = 0; index < point_size; index++){
         expansion_point[index] = middle_point[index] + gamma*(middle_point[index] - reflection_point[index]);
     }
@@ -104,8 +119,8 @@ vector<float> Nelder_Mead::Nelder_mead(){
             }
         }
         symplex[0] = best_point;
-        symplex[1] = good_point;
-        symplex[2] = worst_point;
+        symplex[ceil(problem_size/2)] = good_point;
+        symplex[problem_size - 1] = worst_point;
     }
     return(best_point);
 }
@@ -129,9 +144,16 @@ vector<vector<float>> Nelder_Mead::Get_Symplex(){
     return symplex;
 }
 void Nelder_Mead::init_base_symplex(){
-    symplex.push_back(vector<float> {0.0, 0.0,});
-    symplex.push_back(vector<float> {1.0, 0.0});
-    symplex.push_back(vector<float> {0.0, 1.0});
+    vector<float> initialPoint;
+    for (int index = 0; index < problem_size; index++){
+        initialPoint.push_back(0.0);
+    }
+    symplex.push_back(initialPoint);
+    float delta = 1.0;
+    for (int index = 1; index < problem_size; index++) {
+        symplex.push_back(initialPoint);
+        symplex[index][index-1] += delta;
+    }
 }
 
 Nelder_Mead::Nelder_Mead(int problem_size, vector<vector<float>> initual_points, FuncPtr func){

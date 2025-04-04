@@ -1,5 +1,7 @@
 #ifndef INCLUDE_FUN_H_
 #define INCLUDE_FUN_H_
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include <map>
@@ -8,6 +10,10 @@ using namespace std;
 float function1_2d(vector<float>);
 float function2_2d(vector<float>);
 float function3_2d(vector<float>);
+float function_Izom_2d( vector<float> point);
+float function_Rezen_n( vector<float> point);
+float function_Rastr_n(vector<float> point);
+float function_Sphere_n(vector<float> point);
 
 class Nelder_Mead{
     private:

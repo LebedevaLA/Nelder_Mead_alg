@@ -5,10 +5,8 @@ void Do_Nelder_Mead( Nelder_Mead algorithm){
     cout<<"Coefficients"<<endl;
     algorithm.Print_coefficients();
     cout <<"Answer"<<endl;
-    vector<float> res = algorithm.Get_Nelder_Mead_result();
-    for (int index =0; index < res.size(); index++){
-        cout << res[index]<<" ";
-    }
+    Point res = algorithm.Get_Nelder_Mead_result();
+    res.Print_point();
 }
 
 int main(){
@@ -19,17 +17,17 @@ int main(){
     cout << "Do you know symplex?(y/n)" << endl;
     char answer;
     cin >> answer;
-    vector < vector<float> > initial_points;
+    vector <Point> initial_points;
     bool have_initialsymplex = 0;
     if (answer == 'y' || answer == 'Y'){
         cout<<"Input coordinates"<<endl;
         int index = 0;
         while (index < problem_size){
-            vector <float> coordinates_in_point (point_size);
+            vector <double> coordinates_in_point (point_size);
             for (int iter = 0; iter < point_size; iter ++){
                 cin >> coordinates_in_point[iter];
             }
-            initial_points.push_back(coordinates_in_point);
+            initial_points.push_back(Point(coordinates_in_point));
             index++;
         }
         have_initialsymplex =1;
@@ -50,7 +48,7 @@ int main(){
         have_coeff = 1;
     }
     if (!have_coeff && !have_initialsymplex){
-        Nelder_Mead algorithm = Nelder_Mead(problem_size, function_Izom_2d);
+        Nelder_Mead algorithm = Nelder_Mead(problem_size, function_Rastr_n);
         Do_Nelder_Mead(algorithm);
     }
     else if (have_coeff && have_initialsymplex){

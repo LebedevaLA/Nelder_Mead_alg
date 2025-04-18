@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdio>
+#include <sys/stat.h>
 #include "fun.h"
 
 enum log_level { DEBUG, INFO, WARNING, ERROR };

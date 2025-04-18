@@ -1,10 +1,12 @@
 #include "fun.h"
+#include "Logger.h"
 
 bool Nelder_Mead::comparePoints(const Point& a, const Point& b) {
     FuncinPoint fa(a, function);
     FuncinPoint fb(b, function);
     return fa < fb;
 }
+
 void Nelder_Mead::Sort_Symplex(){
     sort(symplex.begin(), symplex.end(), [this](const Point& a, const Point& b) {
         return comparePoints(a, b);
@@ -12,6 +14,7 @@ void Nelder_Mead::Sort_Symplex(){
     best_point = symplex[0];
     good_point = symplex[ceil(problem_size / 2)];
     worst_point = symplex[problem_size - 1];
+    logger.log(DEBUG, "Nelder_Mead::Sort_Symplex() complete.", symplex);
 }
 
 Point Nelder_Mead::Find_Middle_point_best_good(){
@@ -24,6 +27,7 @@ Point Nelder_Mead::Find_Middle_point_best_good(){
     for (int index = 0; index < point_size; index++) {
         middle_point.ChangeiPoint(index, middle_point.GetiPoint(index) / (problem_size - 1));
     }
+    logger.log(DEBUG, "Point Nelder_Mead::Find_Middle_point_best_good() complete.", middle_point, "middle_point");
     return (middle_point);
 }
 
@@ -35,6 +39,7 @@ Point Nelder_Mead::Find_Center_point_worst_middle(){
     for (int index =0; index< point_size; index++){
         center_point.ChangeiPoint(index, center_point.GetiPoint(index)/point_size);
     }
+    logger.log(DEBUG, "Point Nelder_Mead::Find_Center_point_worst_middle() complete.", center_point, "center_point");
     return(center_point);
 }
 
@@ -44,6 +49,7 @@ Point Nelder_Mead::reflection(){
         reflection_point.ChangeiPoint(index, middle_point.GetiPoint(index) + 
         alpha*(middle_point.GetiPoint(index) - worst_point.GetiPoint(index)));
     }
+    logger.log(DEBUG, "Point Nelder_Mead::reflection() complete.", reflection_point, "reflection_point");
     return (reflection_point);
 }
 
@@ -53,6 +59,7 @@ Point Nelder_Mead::compression(){
         compression_point.ChangeiPoint(index, middle_point.GetiPoint(index) + 
         beta*(worst_point.GetiPoint(index) - middle_point.GetiPoint(index)));
     }
+    logger.log(DEBUG, "Point Nelder_Mead::compression() complete.", compression_point, "compression_point");
     return (compression_point);
 }
 
@@ -61,11 +68,15 @@ Point Nelder_Mead::expansion(Point reflection_point){
     for (int index = 0; index < point_size; index++){
         expansion_point.ChangeiPoint(index, middle_point.GetiPoint(index) + gamma*(middle_point.GetiPoint(index) - reflection_point.GetiPoint(index)));
     }
+    logger.log(DEBUG, "Point Nelder_Mead::expansion(Point reflection_point) complete.", expansion_point, "expansion_point");
     return (expansion_point);
 }
 
 Point Nelder_Mead::Nelder_mead(){
+    logger.log(INFO, "Nelder_mead is running.");
+    logger.log(INFO, "Start data.", problem_size, symplex, alpha, beta, gamma, maxiter);
     for (int iter = 0; iter<maxiter; iter++){
+        logger.log(DEBUG, "Start iteration #" + to_string(iter) + ".");
         Sort_Symplex();
         middle_point = Find_Middle_point_best_good();
         reflection_point = reflection();
@@ -87,11 +98,14 @@ Point Nelder_Mead::Nelder_mead(){
         symplex[0] = best_point;
         symplex[ceil(problem_size/2)] = good_point;
         symplex[problem_size - 1] = worst_point;
+        logger.log(DEBUG, "Result of iteration #"+to_string(iter)+".", symplex);
     }
+    logger.log(DEBUG, "Point Nelder_Mead::Nelder_mead() complete.", best_point, "best_point");
+    logger.log(INFO, "Nelder_mead successful complete.", best_point, "result");
     return(best_point);
 }
 
-Point  Nelder_Mead::Get_Nelder_Mead_result(){
+Point Nelder_Mead::Get_Nelder_Mead_result(){
     return (Nelder_mead());
 }
 Point  Nelder_Mead::Get_Middle_Point(){
@@ -118,6 +132,7 @@ void Nelder_Mead::init_base_symplex(){
         double coord = symplex[index].GetiPoint(index-1);
         symplex[index].ChangeiPoint(index - 1, coord + delta);
     }
+    logger.log(DEBUG,"Nelder_Mead::init_base_symplex() complete.", symplex);
 }
 
 Nelder_Mead::Nelder_Mead(int problem_size, std::vector<Point> initual_points, FuncPtr func)
@@ -154,4 +169,3 @@ void Nelder_Mead::Print_coefficients(){
     cout << "Beta"<< beta << endl;
     cout << "Gamma"<< gamma << endl;
 }
-

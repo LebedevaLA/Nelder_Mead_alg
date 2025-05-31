@@ -1,4 +1,6 @@
 #pragma once
+#include <iomanip>
+#include <limits>
 #include <ctime>
 #include <fstream>
 #include <sstream>
@@ -13,6 +15,8 @@ private:
     vector<log_level> _levels_to_write;
     ofstream _logFile;
     string levelToString(log_level);
+    string doubleToString(double value);
+    string symplexToString(vector<Point> symplex, string name_symplex);
 public:
     Logger(vector<log_level>);
     ~Logger();

@@ -19,6 +19,27 @@ Logger :: Logger(vector<log_level> levels_to_write): _levels_to_write(levels_to_
     }
 }
 
+string Logger::doubleToString(double value) {
+    std::ostringstream oss;
+    oss << std::setprecision(std::numeric_limits<double>::max_digits10) << value;
+    return oss.str();
+}
+
+string Logger::symplexToString(vector<Point> symplex, string name_symplex) {
+    string stringSymplex = "";
+    int index_last_point = symplex[symplex.size() - 1].point.size() - 1;
+    int index_last_str_symplex = symplex.size() - 1;
+
+    stringSymplex += " " + name_symplex + ": [";
+    for (int index_symplex = 0; index_symplex <= index_last_str_symplex; index_symplex++) {
+        for (int index_point = 0; index_point < index_last_point; index_point++) {
+            stringSymplex += doubleToString(symplex[index_symplex].point[index_point]) + ", ";
+        }
+    }
+    stringSymplex += doubleToString(symplex[index_last_str_symplex].point[index_last_point]) + "]";
+    return stringSymplex;
+}
+
 Logger :: ~Logger() {
     _logFile.close(); 
 }
@@ -38,7 +59,7 @@ void Logger :: log(log_level level, string message) {
     ostringstream log_entry;
     log_entry << "[" << time_stamp << "] " << levelToString(level) << ": " << message << endl;
 
-    //cout << log_entry.str(); - при желании можно вывести всё на консоль
+    //cout << log_entry.str(); //- при желании можно вывести всё на консоль
 
     if (_logFile.is_open()) {
         _logFile << log_entry.str();
@@ -56,45 +77,22 @@ void Logger::log(log_level level, string message, Point point, string name_point
     }
 
     for (int index = 0; index < point.point.size()-1; index++) {
-        data+=to_string(point.point[index])+", ";
+        data+= doubleToString(point.point[index])+", ";
     }
-    data += to_string(point.point[point.point.size() - 1]) + "]";
+    data += doubleToString(point.point[point.point.size() - 1]) + "]";
 
     log(level, message + data);
 }
 
 void Logger::log(log_level level, string message, vector<Point> symplex) {
-    string data = "";
-    int index_last_point = symplex[symplex.size() - 1].point.size() - 1;
-    int index_last_str_symplex = symplex.size() - 1;
-
-    data += " symplex: [";
-    for (int index_symplex = 0; index_symplex <= index_last_str_symplex; index_symplex++) {
-        for (int index_point = 0; index_point < index_last_point; index_point++) {
-            data += to_string(symplex[index_symplex].point[index_point]) + ", ";
-        }
-    }
-    data += to_string(symplex[index_last_str_symplex].point[index_last_point]) + "]";
-
-    log(level, message + data);
+    log(level, message + symplexToString(symplex, "symplex"));
 }
 
 void Logger :: log(log_level level, string message, int problem_size, vector<Point> symplex,
     float alpha, float beta, float gamma, int max_iter) {
     string data = "";
-    int index_last_point = symplex[symplex.size() - 1].point.size() - 1;
-    int index_last_str_symplex = symplex.size() - 1;
-
     data += "\nproblem_size: " + to_string(problem_size) + "\n";
-
-    data += "start_symplex: [";
-    for (int index_symplex = 0; index_symplex <= index_last_str_symplex; index_symplex++) {
-        for (int index_point = 0; index_point < index_last_point; index_point++) {
-            data += to_string(symplex[index_symplex].point[index_point]) + ", ";
-        }
-    }
-    data += to_string(symplex[index_last_str_symplex].point[index_last_point]) + "]\n";
-
+    data += symplexToString(symplex, "start_symplex") + "\n";
     data += "alpha: " + to_string(alpha) + "\n";
     data += "beta: " + to_string(beta) + "\n";
     data += "gamma: " + to_string(gamma) + "\n";
